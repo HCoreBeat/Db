@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Estadísticas de Clics</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+    }
+    #clicks-list {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Registro de Clics</h1>
+  <button id="click-button">Haz clic aquí</button>
+  <div id="clicks-list">
+    <h2>Historial de Clics</h2>
+    <ul id="clicks"></ul>
+  </div>
+
+  <script>
+    const button = document.getElementById('click-button');
+    const clicksList = document.getElementById('clicks');
+
+    // Registrar un clic
+    button.addEventListener('click', async () => {
+      await fetch('/api/clicks', { method: 'POST' });
+      loadClicks();
+    });
+
+    // Cargar el historial de clics
+    async function loadClicks() {
+      const response = await fetch('/api/clicks');
+      const clicks = await response.json();
+      clicksList.innerHTML = clicks.map(click => `
+        <li>${new Date(click.timestamp).toLocaleString()}</li>
+      `).join('');
+    }
+
+    // Cargar los clics al iniciar
+    loadClicks();
+  </script>
+</body>
+</html>
